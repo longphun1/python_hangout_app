@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'cityDetail.css' %}" />
+
+<body>
+    <div class="main-container">
+        <div class="description-container">
+            <h1>{{weather.name}} weather</h1>
+            {% for w in weather.weather %}
+            <h3>Currently {{cityTemp}} ° with {{ w.description }}</h3>
+            <h3 class="sunset-text">Sunrise: {{sunriseTime}}</h3>
+            <h3 class="sunset-text">Sunset: {{sunsetTime}}</h3>
+            <h3>Wind speed: {{windSpeed}} mph</h3>
+            {% endfor %}
+            <a class="dashboard-link" href="/dashboard">Go back</a>
+        </div>
+        <div class="add-event-container">
+            <form action="/processEvent/{{city.id}}" method="POST">
+                {% csrf_token %}
+                <input class="title-input" type="text" name="event_title" placeholder="What are you planning today?">
+                <input class="description-input" type="text" name="event_description" placeholder="Add a description (where and what time).">
+                <input type="hidden" name="event_city" value="{{city.id}}">
+                <input class="submit-button" type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="events-container">
+            {% for event in events %}
+            {% if event.event_city_id == city.id %}
+                <div class="events-box">
+                    <div class="top-half">
+                        <h2 class="event-title">{{event.event_title}} by {{event.event_user_firstName}} {{event.event_user_lastName}}.</h2>
+                        <h5>at {{event.created_at}}</h5>
+                        <h3 class="description-text">{{event.event_description}}</h3>
+                        {% if user.id != event.event_user_id%}    
+                            <div class="event-btn-forms">
+                                <form action="/add_user_to_event/{{city.id}}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="name_city" value="{{city.id}}">
+                                    <input type="hidden" name="name_event" value="{{event.id}}">
+                                    <input class="events-buttons" type="Submit" value="Join">
+                                </form>
+                            </div>  
+                        {% endif %}              
+                        {% for a in attendance %}
+                            {% if user.id == a.name_users_id and a.join_event == True and event.id == a.name_event_id %}
+                            <div class="event-btn-forms">
+                                <form action="/delete_user_from_event/{{a.id}}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event_city" value="{{city.id}}">
+                                    <input class="events-buttons" type="submit" value="Cancel">
+                                </form> 
+                            </div>
+                            {% endif %}
+                        {% endfor %} 
+                    </div>
+                    <div class="dotted-line"></div>
+                    <div class="dropdown">
+                        <button class="dropbtn">View who's going</button>
+                        <div class="dropdown-content">
+                            {% for a in attendance %}
+                            {% if a.name_event_id == event.id%}
+                            <ul class="results">{{a.user_name}}</ul>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>                   
+                    {% if user.id == event.event_user_id%}
+                        <div class="delete-btn-container">
+                            <form action="/remove_event/{{event.id}}" method="POST">
+                                {% csrf_token %}
+                                <input class="delete-btn" type="submit" value="Delete">
+                                <input type="hidden" name="event_city" value="{{city.id}}">
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>

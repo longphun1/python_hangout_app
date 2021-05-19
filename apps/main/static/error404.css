@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+body {
+    text-align: center;
+}
+
+.container {
+    margin-top: 18%;
+}
+
+.text{
+    margin: 10px;
+}
+
+img {
+    max-width: 500px;
+}

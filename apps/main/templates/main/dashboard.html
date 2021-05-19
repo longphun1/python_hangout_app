@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'dashboard.css' %}" />
+
+<body>
+    <div class="main-container">
+        <div class="header-container">
+            <h1 class="header">Lets hangout, {{user.first_name}}! <a class="logout" href="/logout">(not you? Logout)</a></h1>            
+        </div>   
+        <div class="search-container">
+            <form action="/processCity" method="POST">
+                {% csrf_token %}
+                <input class="search-input" type="text" name="city" placeholder="(Search for a city)">
+                <p style="background-color: aliceblue;">{{error}}</p>
+            </form>
+        </div> 
+        <div class="dropdown">
+            <button class="dropbtn">View Recent Searches</button>
+            <div class="dropdown-content">
+                {% for city in cities%}
+                <a class="recent-search-results" href="/city/{{city.id}}">{{city.cityName}} </a><a class="remove-button" href="/remove/{{city.id}}"></a>
+                {% endfor %}
+            </div>
+        </div>    
+    </div>
+</body>
+
+</html>

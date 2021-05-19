@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+{% load static %}
+<link rel="stylesheet" href="{% static 'login.css' %}" />
+<body>
+    <div class="main-container">
+        <div class="form-container">
+            <div class="container">
+                <h1 class="header">Registration</h1>
+                {% for message in messages %}
+                    <p style="color: red">{{message}}</p>
+                {% endfor %}
+                <form action="/register" method="POST">
+                {% csrf_token %}
+                    <div>
+                        <input class="input-form" type="text" name="first_name" placeholder="First Name">
+                    </div>
+                    <div>
+                        <input class="input-form" type="text" name="last_name" placeholder="Last Name">
+                    </div>
+                    <div>
+                        <input class="input-form" type="email" name="email" placeholder="Email">
+                    </div>
+                    <div>
+                        <input class="input-form" type="password" name="password" placeholder="Password (At least 8 characters)">
+                    </div>
+                    <div>
+                        <input class="input-form" type="password" name="pw_confirm" placeholder="Confirm Password">
+                    </div>
+                    <button class="submit-button">Submit</button>
+                </form>
+            </div>
+            
+            <div class="container">
+                <h1 class="header">Login</h1>
+                <form action="/login" method="POST">
+                {% csrf_token %}
+                    <div>
+                        <input class="input-form" type="email" name="email" placeholder="Email">
+                    </div>
+                    <div>
+                        <input class="input-form" type="password" name="password" placeholder="Password">
+                    </div>
+                    <button class="submit-button">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
